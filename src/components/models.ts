@@ -7,6 +7,13 @@ export interface Meta {
     totalCount: number;
 }
 
+export interface Group {
+    id: number;
+    name: string;
+    createdAt: Date;
+    lastActivity: Date;
+}
+
 export interface GroupMessage {
     id: number;
     authorId: number;
