@@ -19,12 +19,12 @@
 
         <q-drawer v-model="leftDrawerOpen" show-if-above bordered>
             <q-list>
-                <q-item-label header> Essential Links </q-item-label>
+                <q-item-label header> Groups </q-item-label>
 
-                <EssentialLink
-                    v-for="link in linksList"
-                    :key="link.title"
-                    v-bind="link"
+                <GroupLink
+                    v-for="group in groupsList"
+                    :key="group.id"
+                    :group="group"
                 />
             </q-list>
         </q-drawer>
@@ -36,21 +36,21 @@
 </template>
 
 <script setup lang="ts">
-import EssentialLink from "components/EssentialLink.vue";
-import { ref } from "vue";
+import GroupLink from "components/GroupLink.vue";
+import GroupService from "../services/groupService"
+import { onMounted, ref } from "vue";
+import { Group } from "src/components/models";
 
 const leftDrawerOpen = ref(false);
-
-const linksList = [
-    {
-        title: "Test",
-        caption: "quasar.dev",
-        icon: "school",
-        link: "https://quasar.dev"
-    }
-];
 
 function toggleLeftDrawer() {
     leftDrawerOpen.value = !leftDrawerOpen.value;
 }
+
+const groupsList = ref<Group[]>([]);
+
+onMounted(async () => {
+    groupsList.value = await GroupService.getAllGroups();
+    console.log(groupsList.value);
+});
 </script>
