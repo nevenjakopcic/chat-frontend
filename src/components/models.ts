@@ -14,7 +14,7 @@ export interface Group {
     lastActivity: Date;
 }
 
-export interface GroupMessage {
+export interface Message {
     id: number;
     authorId: number;
     groupId: number;

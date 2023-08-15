@@ -1,5 +1,5 @@
 <template>
-    <q-item clickable tag="a" target="_blank">
+    <q-item clickable :to="link">
         <q-item-section avatar>
             <q-icon name="group" />
         </q-item-section>
@@ -12,9 +12,16 @@
 </template>
 
 <script setup lang="ts">
+import { PropType } from "vue";
 import { Group } from "./models";
 
-defineProps<{
-    group: Group
-}>();
+const props = defineProps({
+    group: {
+        type: Object as PropType<Group>,
+        required: true
+    }
+});
+
+const link = "/group/" + props.group.id;
+
 </script>

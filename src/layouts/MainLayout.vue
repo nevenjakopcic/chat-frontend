@@ -51,6 +51,5 @@ const groupsList = ref<Group[]>([]);
 
 onMounted(async () => {
     groupsList.value = await GroupService.getAllGroups();
-    console.log(groupsList.value);
 });
 </script>
