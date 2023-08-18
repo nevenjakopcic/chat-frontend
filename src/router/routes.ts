@@ -1,18 +1,42 @@
 import { RouteRecordRaw } from "vue-router";
+import ROUTE_NAMES from "./routeNames";
 
 const routes: RouteRecordRaw[] = [
     {
         path: "/",
-        component: () => import("layouts/MainLayout.vue"),
+        component: () => import("layouts/BasicLayout.vue"),
+        redirect: () => { return { path: "/home" }},
         children: [
             {
-                path: "",
-                component: () => import("pages/IndexPage.vue")
+                path: "/login",
+                name: ROUTE_NAMES.LOGIN,
+                component: () => import("pages/LoginPage.vue"),
+                meta: {
+                    guest: true
+                }
+            }
+        ]
+    },
+    {
+        path: "/chat",
+        component: () => import("layouts/ChatLayout.vue"),
+        children: [
+            {
+                path: "/home",
+                name: ROUTE_NAMES.HOME,
+                component: () => import("pages/IndexPage.vue"),
+                meta: {
+                    auth: true
+                }
             },
             {
                 path: "/group/:id",
-                component: () => import("pages/ConversationPage.vue")
-            }
+                name: ROUTE_NAMES.CONVERSATION,
+                component: () => import("pages/ConversationPage.vue"),
+                meta: {
+                    auth: true
+                }
+            },
         ]
     },
     {

@@ -1,17 +1,18 @@
-export interface Todo {
-    id: number;
-    content: string;
-}
-
-export interface Meta {
-    totalCount: number;
-}
-
 export interface Group {
     id: number;
     name: string;
     createdAt: Date;
     lastActivity: Date;
+    members: Member[];
+}
+
+export interface Member {
+    id: number;
+    username: string;
+    lastOnline: Date;
+    userSince: Date;
+    role: string;
+    memberSince: Date;
 }
 
 export interface Message {

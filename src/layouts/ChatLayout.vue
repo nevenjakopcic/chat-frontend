@@ -13,7 +13,13 @@
 
                 <q-toolbar-title> Quasar App </q-toolbar-title>
 
-                <div>Quasar v{{ $q.version }}</div>
+                <q-btn
+                    flat
+                    dense
+                    round
+                    icon="logout"
+                    @click="logout"
+                />
             </q-toolbar>
         </q-header>
 
@@ -36,18 +42,28 @@
 </template>
 
 <script setup lang="ts">
+import { useUserStore } from "src/stores/user-store";
 import GroupLink from "components/GroupLink.vue";
-import GroupService from "../services/groupService"
+import GroupService from "../services/groupService";
 import { onMounted, ref } from "vue";
-import { Group } from "src/components/models";
+import { Group } from "src/models/common";
+import { useRouter } from "vue-router";
+import ROUTE_NAMES from "src/router/routeNames";
+
+const userStore = useUserStore();
+const router = useRouter();
 
 const leftDrawerOpen = ref(false);
+const groupsList = ref<Group[]>([]);
 
 function toggleLeftDrawer() {
     leftDrawerOpen.value = !leftDrawerOpen.value;
 }
 
-const groupsList = ref<Group[]>([]);
+function logout() {
+    userStore.logout();
+    router.push({ name: ROUTE_NAMES.LOGIN });
+}
 
 onMounted(async () => {
     groupsList.value = await GroupService.getAllGroups();

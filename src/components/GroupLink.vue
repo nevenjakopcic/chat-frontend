@@ -13,7 +13,7 @@
 
 <script setup lang="ts">
 import { PropType } from "vue";
-import { Group } from "./models";
+import { Group } from "src/models/common";
 
 const props = defineProps({
     group: {
@@ -23,5 +23,4 @@ const props = defineProps({
 });
 
 const link = "/group/" + props.group.id;
-
 </script>
