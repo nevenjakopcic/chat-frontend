@@ -13,7 +13,7 @@
 
 <script setup lang="ts">
 import { PropType } from "vue";
-import { Group } from "src/models/common";
+import { Group } from "src/models/chat";
 
 const props = defineProps({
     group: {

@@ -46,7 +46,7 @@ import { useUserStore } from "src/stores/user-store";
 import GroupLink from "components/GroupLink.vue";
 import GroupService from "../services/groupService";
 import { onMounted, ref } from "vue";
-import { Group } from "src/models/common";
+import { Group } from "src/models/chat";
 import { useRouter } from "vue-router";
 import ROUTE_NAMES from "src/router/routeNames";
 

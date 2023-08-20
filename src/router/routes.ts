@@ -24,7 +24,7 @@ const routes: RouteRecordRaw[] = [
             {
                 path: "/home",
                 name: ROUTE_NAMES.HOME,
-                component: () => import("pages/IndexPage.vue"),
+                component: () => import("pages/HomePage.vue"),
                 meta: {
                     auth: true
                 }
@@ -37,6 +37,14 @@ const routes: RouteRecordRaw[] = [
                     auth: true
                 }
             },
+            {
+                path: "/test",
+                name: ROUTE_NAMES.TEST,
+                component: () => import("pages/TestPage.vue"),
+                meta: {
+                    auth: true
+                }
+            }
         ]
     },
     {

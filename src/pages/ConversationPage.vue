@@ -5,9 +5,10 @@
                 <q-chat-message
                     v-for="(message, key) in messages"
                     :key="key"
-                    :name="messageName(message)"
+                    :name="getUsername(message)"
                     :text="[message.content]"
                     :sent="isSent(message)"
+                    :stamp="message.createdAt.toString()"
                 />
             </div>
         </div>
@@ -24,38 +25,28 @@
 </template>
 
 <script setup lang="ts">
+import { Client, StompSubscription } from "@stomp/stompjs";
 import GroupService from "../services/groupService";
-import { Group, Message } from "src/models/common";
+import { Group, Message } from "src/models/chat";
 import { useUserStore } from "src/stores/user-store";
-import { ref, onMounted, watch } from "vue";
+import { ref, onMounted, watch, onUnmounted } from "vue";
 import { useRoute } from "vue-router";
 
 const userStore = useUserStore();
 const route = useRoute();
+const stomp = new Client({brokerURL: "ws://localhost:8080/chat"});
+let subscription: StompSubscription | null = null;
 
 const group = ref<Group>();
 const messages = ref<Message[]>([]);
 const input = ref<HTMLInputElement | null>(null);
 const inputText = ref<string>("");
 
-async function loadGroupInfoAndMembers(id: number) {
-    group.value = await GroupService.getGroupAndMembers(id);
-}
+function getUsername(message: Message) {
+    const authorId = message.authorId;
+    const author = group.value?.members.find((m) => m.id === authorId);
 
-function getMember(id: number) {
-    return group.value?.members.find((m) => m.id === id);
-}
-
-async function loadMessages(id: number) {
-    messages.value = await GroupService.getGroupMessages(id, 20);
-    messages.value.sort((a, b) => a.id - b.id);
-}
-
-function messageName(message: Message) {
-    const username = getMember(message.authorId)?.username;
-    const date = message.createdAt.toString();
-
-    return `${username} | ${date}`;
+    return author?.username;
 }
 
 function isSent(message: Message) {
@@ -66,25 +57,53 @@ function onSubmit() {
     if (inputText.value.trim().length === 0) return;
 
     sendMessage(inputText.value);
+
     inputText.value = "";
     input.value?.focus();
 }
 
 function sendMessage(message: string) {
-    console.log(message);
+    stomp.publish({
+        destination: `/ws/chat/group/${group.value?.id}`,
+        body: JSON.stringify({
+            authorId: userStore.data?.id,
+            content: message
+        })
+    })
+}
+
+async function setupConversation(id: number) {
+    group.value = await GroupService.getGroupAndMembers(id);
+
+    messages.value = await GroupService.getGroupMessages(id, 20);
+    messages.value.sort((a, b) => a.id - b.id);
+
+    subscription = stomp.subscribe(`/topic/messages/group/${id}`, (message) => {
+        const received: Message = JSON.parse(message.body);
+
+        messages.value.push(received);
+    });
+
+    input.value?.focus();
 }
 
 watch(
-    () => route.params.id,
-    async (newId) => {
-        loadGroupInfoAndMembers(+route.params.id);
-        loadMessages(+newId);
+    () => route.params,
+    async (toParams) => {
+        // stomp.unsubscribe(`/topic/messages/group/${fromParams.id}`)
+        subscription?.unsubscribe;
+
+        setupConversation(+toParams.id);
     }
 );
 
 onMounted(async () => {
-    loadGroupInfoAndMembers(+route.params.id);
-    loadMessages(+route.params.id);
-    input.value?.focus();
+    stomp.activate();
+
+    setupConversation(+route.params.id);
 });
+
+onUnmounted(() => {
+    stomp.deactivate();
+})
 </script>
