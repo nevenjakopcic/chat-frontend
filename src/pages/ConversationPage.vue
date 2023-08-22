@@ -35,7 +35,7 @@ import { useRoute } from "vue-router";
 const userStore = useUserStore();
 const route = useRoute();
 const stomp = new Client({brokerURL: "ws://localhost:8080/chat"});
-let subscription: StompSubscription | null = null;
+const subscriptions: StompSubscription[] = [];
 
 const group = ref<Group>();
 const messages = ref<Message[]>([]);
@@ -78,11 +78,12 @@ async function setupConversation(id: number) {
     messages.value = await GroupService.getGroupMessages(id, 20);
     messages.value.sort((a, b) => a.id - b.id);
 
-    subscription = stomp.subscribe(`/topic/messages/group/${id}`, (message) => {
+    const sub = stomp.subscribe(`/topic/messages/group/${id}`, (message) => {
         const received: Message = JSON.parse(message.body);
 
         messages.value.push(received);
     });
+    subscriptions.push(sub);
 
     input.value?.focus();
 }
@@ -90,8 +91,9 @@ async function setupConversation(id: number) {
 watch(
     () => route.params,
     async (toParams) => {
-        // stomp.unsubscribe(`/topic/messages/group/${fromParams.id}`)
-        subscription?.unsubscribe;
+        while (subscriptions.length > 0) {
+            subscriptions.pop()?.unsubscribe();
+        }
 
         setupConversation(+toParams.id);
     }
