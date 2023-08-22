@@ -1,7 +1,7 @@
 <template>
-    <q-page class="row items-center justify-end">
-        <div class="q-pa-md row justify-center">
-            <div>
+    <q-page class="column items-center justify-end">
+        <div class="fit" style="flex-grow: 1;">
+            <q-scroll-area class="q-pa-md" style="height: 800px;">
                 <q-chat-message
                     v-for="(message, key) in messages"
                     :key="key"
@@ -10,16 +10,25 @@
                     :sent="isSent(message)"
                     :stamp="message.createdAt.toString()"
                 />
-            </div>
+            </q-scroll-area>
         </div>
-        <q-form @submit="onSubmit" class="q-pa-lg full-width">
+        <q-form class="q-pa-lg full-width">
             <q-input
                 outlined
                 ref="input"
                 v-model="inputText"
                 placeholder="Type a message"
-            />
-            <q-btn round color="primary" icon="send" type="submit" />
+            >
+                <template #after>
+                    <q-btn
+                        @click="onSubmit"
+                        round
+                        color="primary"
+                        icon="send"
+                        type="submit"
+                    />
+                </template>
+            </q-input>
         </q-form>
     </q-page>
 </template>
