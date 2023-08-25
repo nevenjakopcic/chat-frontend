@@ -22,3 +22,18 @@ export interface Message {
     content: string;
     createdAt: Date;
 }
+
+export interface User {
+    id: number;
+    username: string;
+    email: string;
+    lastOnline: Date;
+    joinedAt: Date;
+}
+
+export interface Relationship {
+    user1: User;
+    user2: User;
+    status: string;
+    lastUpdatedAt: Date;
+}

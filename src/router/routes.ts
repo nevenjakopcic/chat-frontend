@@ -5,7 +5,9 @@ const routes: RouteRecordRaw[] = [
     {
         path: "/",
         component: () => import("layouts/BasicLayout.vue"),
-        redirect: () => { return { path: "/home" }},
+        redirect: () => {
+            return { path: "/home" };
+        },
         children: [
             {
                 path: "/login",

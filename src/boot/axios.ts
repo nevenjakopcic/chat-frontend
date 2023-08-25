@@ -18,7 +18,7 @@ export default boot(({ app }) => {
         const userStore = useUserStore();
         const user = userStore.data;
 
-        config.headers.Authorization = user? `Bearer ${user.token}` : "";
+        config.headers.Authorization = user ? `Bearer ${user.token}` : "";
 
         return config;
     });

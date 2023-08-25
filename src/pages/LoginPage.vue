@@ -7,13 +7,15 @@
                 <h5 class="text-h5 text-white q-my-md">Chat</h5>
             </div>
             <div class="row">
-                <q-card square bordered class="q-pa-md shadow-1" style="width: 400px;">
+                <q-card
+                    square
+                    bordered
+                    class="q-pa-md shadow-1"
+                    style="width: 400px"
+                >
                     <q-card-section>
                         <q-form class="q-gutter-md">
-                            <q-input
-                                v-model="username"
-                                label="username"
-                            />
+                            <q-input v-model="username" label="username" />
                             <q-input
                                 v-model="password"
                                 type="password"
