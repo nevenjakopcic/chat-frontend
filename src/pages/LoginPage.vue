@@ -1,6 +1,6 @@
 <template>
     <q-page
-        class="bg-light-blue window-height window-width row justify-center items-center"
+        class="bg-light-green-7 window-height window-width row justify-center items-center"
     >
         <div class="column">
             <div class="row">
@@ -26,7 +26,7 @@
                     <q-card-actions class="q-px-md">
                         <q-btn
                             unelevated
-                            color="light-blue-7"
+                            color="light-green-8"
                             size="lg"
                             class="full-width"
                             label="Login"
@@ -47,6 +47,7 @@
 <script setup lang="ts">
 import ROUTE_NAMES from "src/router/routeNames";
 import AuthService from "../services/authService";
+import RelationshipService from "../services/relationshipService";
 import { useUserStore } from "src/stores/user-store";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
@@ -60,8 +61,10 @@ const password = ref<string>("");
 async function login() {
     try {
         const data = await AuthService.login(username.value, password.value);
-
         userStore.login(data);
+
+        userStore.updateRelationships();
+
         router.push({ name: ROUTE_NAMES.HOME });
     } catch (e) {
         console.log("Failed to login");

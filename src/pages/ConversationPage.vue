@@ -1,7 +1,11 @@
 <template>
     <q-page class="column items-center justify-end">
-        <div class="fit" style="flex-grow: 1">
-            <q-scroll-area class="q-pa-md" style="height: 800px">
+        <div class="row fit" style="flex-grow: 1">
+            <q-scroll-area
+                class="q-px-md"
+                style="width: calc(100% - 280px); height: calc(100vh - 154px)"
+                ref="scrollArea"
+            >
                 <q-chat-message
                     v-for="(message, key) in messages"
                     :key="key"
@@ -19,6 +23,17 @@
                     </template>
                 </q-chat-message>
             </q-scroll-area>
+            <q-list
+                style="width: 280px; border-left: solid 1px rgba(0, 0, 0, 0.12)"
+            >
+                <q-item-label header> Members </q-item-label>
+                <MemberLink
+                    v-for="member in group?.members"
+                    :key="member.id"
+                    :group="group"
+                    :member="member"
+                />
+            </q-list>
         </div>
         <q-form class="q-pa-lg full-width">
             <q-input
@@ -43,13 +58,15 @@
 
 <script setup lang="ts">
 import { Client, StompSubscription } from "@stomp/stompjs";
+import MemberLink from "src/components/MemberLink.vue";
 import UserDialog from "components/UserDialog.vue";
 import GroupService from "../services/groupService";
 import { Group, Message } from "src/models/chat";
 import { useUserStore } from "src/stores/user-store";
-import { ref, onMounted, watch, onUnmounted } from "vue";
+import { ref, onMounted, watch, onUnmounted, nextTick } from "vue";
 import { useRoute } from "vue-router";
 import { useQuasar } from "quasar";
+import { QScrollArea } from "quasar";
 
 const $q = useQuasar();
 const userStore = useUserStore();
@@ -59,6 +76,7 @@ const subscriptions: StompSubscription[] = [];
 
 const group = ref<Group>();
 const messages = ref<Message[]>([]);
+const scrollArea = ref<QScrollArea | null>(null);
 const input = ref<HTMLInputElement | null>(null);
 const inputText = ref<string>("");
 
@@ -113,10 +131,16 @@ async function setupConversation(id: number) {
         const received: Message = JSON.parse(message.body);
 
         messages.value.push(received);
+        nextTick(() => {
+            scrollArea.value?.setScrollPosition("vertical", 9999);
+        });
     });
     subscriptions.push(sub);
 
     input.value?.focus();
+    nextTick(() => {
+        scrollArea.value?.setScrollPosition("vertical", 9999);
+    });
 }
 
 watch(
@@ -134,6 +158,7 @@ onMounted(async () => {
     stomp.activate();
 
     setupConversation(+route.params.id);
+    scrollArea.value?.setScrollPercentage("vertical", 1);
 });
 
 onUnmounted(() => {

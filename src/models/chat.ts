@@ -32,8 +32,7 @@ export interface User {
 }
 
 export interface Relationship {
-    user1: User;
-    user2: User;
+    otherUser: User;
     status: string;
     lastUpdatedAt: Date;
 }

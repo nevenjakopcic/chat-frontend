@@ -1,12 +1,11 @@
 <template>
-    <q-item clickable :to="link">
+    <q-item clickable :to="link" active-class="bg-grey-4 text-blue-7">
         <q-item-section avatar>
             <q-icon name="group" />
         </q-item-section>
 
         <q-item-section>
             <q-item-label>{{ group.name }}</q-item-label>
-            <q-item-label caption>{{ group.id }}</q-item-label>
         </q-item-section>
     </q-item>
 </template>

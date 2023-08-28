@@ -1,27 +1,23 @@
 <template>
-    <q-item clickable :to="link">
+    <q-item clickable :to="link" active-class="bg-grey-4 text-blue-7">
         <q-item-section avatar>
             <q-icon name="person" />
         </q-item-section>
 
         <q-item-section>
-            <q-item-label>{{ otherUser }}</q-item-label>
+            <q-item-label>{{ relationship.otherUser.username }}</q-item-label>
+            <q-item-label caption>{{ "Last seen: " + lastSeen }}</q-item-label>
         </q-item-section>
     </q-item>
 </template>
 
 <script setup lang="ts">
+import TimeAgo from "javascript-time-ago";
 import { Relationship } from "src/models/chat";
-import { useUserStore } from "src/stores/user-store";
 import { PropType, computed } from "vue";
 
-const userStore = useUserStore();
-
-const otherUser = computed(() =>
-                    props.relationship.user1.id === userStore.data?.id
-                    ? props.relationship.user2.username
-                    : props.relationship.user1.username
-                );
+const timeAgo = new TimeAgo("en-US");
+const lastSeen = computed(() => timeAgo.format(Date.parse(props.relationship.otherUser.lastOnline.toString())));
 
 const props = defineProps({
     relationship: {

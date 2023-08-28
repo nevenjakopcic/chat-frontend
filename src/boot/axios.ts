@@ -22,6 +22,8 @@ export default boot(({ app }) => {
 
         return config;
     });
+
+    api.interceptors.response.use((response) => response.data);
 });
 
 export { api };
