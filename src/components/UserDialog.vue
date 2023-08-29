@@ -4,7 +4,7 @@
             <q-card-section class="bg-green text-white">
                 <div class="column" style="justify-content: space-between">
                     <div class="text-h5">{{ user.username }}</div>
-                    <div class="text-h6">{{ relationship?.status }}</div>
+                    <div class="text-h6">{{ statusMessage }}</div>
                 </div>
                 <div class="text-subtitle2">Last seen: {{ lastSeen }}</div>
                 <div class="text-subtitle2">User since: {{ userSince }}</div>
@@ -81,6 +81,19 @@ const props = defineProps({
 });
 
 const isNotCurrentUser = computed(() => props.user.id !== userStore.data?.id);
+
+const statusMessage = computed(() => {
+    switch (relationship.value?.status) {
+        case "SENT_FRIEND_REQUEST":
+            return "Sent friend request";
+        case "PENDING_FRIEND_REQUEST":
+            return "Pending friend request";
+        case "FRIEND":
+            return "Friend";
+        default:
+            return "";
+    }
+});
 
 async function sendFriendRequest() {
     await RelationshipService.sendFriendRequest(props.user.id);

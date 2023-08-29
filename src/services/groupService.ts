@@ -11,5 +11,9 @@ export default {
 
     async getGroupMessages(groupId: number, last: number) {
         return (await api.get(`/group/${groupId}/last/${last}`)).data;
+    },
+
+    async kickFromGroup(groupId: number | undefined, memberId: number) {
+        return (await api.delete(`/group/${groupId}/kick/${memberId}`));
     }
 };

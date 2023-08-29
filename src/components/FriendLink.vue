@@ -17,7 +17,11 @@ import { Relationship } from "src/models/chat";
 import { PropType, computed } from "vue";
 
 const timeAgo = new TimeAgo("en-US");
-const lastSeen = computed(() => timeAgo.format(Date.parse(props.relationship.otherUser.lastOnline.toString())));
+const lastSeen = computed(() =>
+    timeAgo.format(
+        Date.parse(props.relationship.otherUser.lastOnline.toString())
+    )
+);
 
 const props = defineProps({
     relationship: {

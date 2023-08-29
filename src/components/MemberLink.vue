@@ -28,21 +28,13 @@
                     dropdown-icon="more_vert"
                 >
                     <q-list>
-                        <q-item
-                            clickable
-                            v-close-popup
-                            @click="promoteToAdmin"
-                        >
+                        <q-item clickable v-close-popup @click="promoteToAdmin">
                             <q-item-section>
                                 <q-item-label>Promote to admin</q-item-label>
                             </q-item-section>
                         </q-item>
 
-                        <q-item
-                            clickable
-                            v-close-popup
-                            @click="kickFromGroup"
-                        >
+                        <q-item clickable v-close-popup @click="kickFromGroup">
                             <q-item-section>
                                 <q-item-label>Kick from group</q-item-label>
                             </q-item-section>
@@ -55,11 +47,12 @@
 </template>
 
 <script setup lang="ts">
-import { Member, Group } from "src/models/chat";
 import { PropType, computed } from "vue";
 import { useQuasar } from "quasar";
-import UserDialog from "components/UserDialog.vue";
 import { useUserStore } from "src/stores/user-store";
+import { Member, Group } from "src/models/chat";
+import GroupService from "src/services/groupService";
+import UserDialog from "components/UserDialog.vue";
 
 const $q = useQuasar();
 const userStore = useUserStore();
@@ -69,7 +62,18 @@ const shouldShowDropdown = computed(() => {
     return props.member.role === "ROLE_MEMBER" && isCurrentUserAdmin;
 });
 
-const isCurrentUserAdmin = computed(() => props.group?.members.find((m) => m.id === userStore.data?.id)?.role === "ROLE_ADMIN");
+const isCurrentUserAdmin = computed(
+    () => props.group?.members.find((m) => m.id === userStore.data?.id)?.role === "ROLE_ADMIN"
+);
+
+function promoteToAdmin() {
+    console.log("promote to admin");
+}
+
+async function kickFromGroup() {
+    await GroupService.kickFromGroup(props.group?.id, props.member.id);
+    emit("change");
+}
 
 function showUserDialog() {
     $q.dialog({
@@ -90,4 +94,6 @@ const props = defineProps({
         required: true
     }
 });
+
+const emit = defineEmits(["change"]);
 </script>

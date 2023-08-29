@@ -3,7 +3,8 @@
         <div class="row fit" style="flex-grow: 1">
             <q-scroll-area
                 class="q-px-md"
-                style="width: calc(100% - 280px); height: calc(100vh - 154px)"
+                style="width: calc(100% - 280px);
+                       height: calc(100vh - 154px)"
                 ref="scrollArea"
             >
                 <q-chat-message
@@ -23,18 +24,54 @@
                     </template>
                 </q-chat-message>
             </q-scroll-area>
-            <q-list
-                style="width: 280px; border-left: solid 1px rgba(0, 0, 0, 0.12)"
+
+            <q-scroll-area
+                style="width: 280px;
+                       height: calc(100vh - 154px)"
             >
-                <q-item-label header> Members </q-item-label>
-                <MemberLink
-                    v-for="member in group?.members"
-                    :key="member.id"
-                    :group="group"
-                    :member="member"
-                />
-            </q-list>
+                <q-list>
+                    <q-item
+                        clickable
+                        @click="addFriendToGroup"
+                        class="text-grey-8"
+                        style="border-bottom: solid 1px rgba(0, 0, 0, 0.2);"
+                    >
+                        <q-item-section>
+                            <q-item-label>Add friend to group</q-item-label>
+                        </q-item-section>
+
+                        <q-item-section avatar>
+                            <q-icon name="person_add_alt_1" />
+                        </q-item-section>
+                    </q-item>
+
+                    <q-item
+                        clickable
+                        @click="leaveGroup"
+                        class="text-grey-8"
+                        style="border-bottom: solid 1px rgba(0, 0, 0, 0.2);"
+                    >
+                        <q-item-section>
+                            <q-item-label>Leave group</q-item-label>
+                        </q-item-section>
+
+                        <q-item-section avatar>
+                            <q-icon name="exit_to_app" />
+                        </q-item-section>
+                    </q-item>
+
+                    <q-item-label header> Members </q-item-label>
+                    <MemberLink
+                        v-for="member in group?.members"
+                        :key="member.id"
+                        :group="group"
+                        :member="member"
+                        @change="updateGroup"
+                    />
+                </q-list>
+            </q-scroll-area>
         </div>
+
         <q-form class="q-pa-lg full-width">
             <q-input
                 outlined
@@ -100,6 +137,14 @@ function onSubmit() {
     input.value?.focus();
 }
 
+function addFriendToGroup() {
+    console.log("add friend to group");
+}
+
+function leaveGroup() {
+    console.log("leave group");
+}
+
 function showUserDialog(userId: number) {
     const userInDialog = group.value?.members.find((m) => m.id === userId);
 
@@ -119,6 +164,10 @@ function sendMessage(message: string) {
             content: message
         })
     });
+}
+
+async function updateGroup() {
+    group.value = await GroupService.getGroupAndMembers(+route.params.id);
 }
 
 async function setupConversation(id: number) {

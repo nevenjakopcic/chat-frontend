@@ -20,12 +20,16 @@
         </q-header>
 
         <q-drawer v-model="leftDrawerOpen" show-if-above bordered>
-            <q-scroll-area
-                style="height: calc(100vh - 50px)"
-            >
+            <q-scroll-area style="height: calc(100vh - 50px)">
                 <q-list>
-                    <q-item-label header class="text-bold q-pb-xs"> Groups </q-item-label>
-                    <q-item clickable class="text-grey-8">
+                    <q-item-label header class="text-bold q-pb-xs">
+                        Groups
+                    </q-item-label>
+                    <q-item
+                        clickable
+                        @click="showCreateGroupDialog"
+                        class="text-grey-8"
+                    >
                         <q-item-section>
                             <q-item-label>Create a new group</q-item-label>
                         </q-item-section>
@@ -40,14 +44,16 @@
                         :group="group"
                     />
 
-                    <q-item-label header class="text-bold q-pb-xs"> Friends </q-item-label>
+                    <q-item-label header class="text-bold q-pb-xs">
+                        Friends
+                    </q-item-label>
                     <q-item clickable class="text-grey-8">
                         <q-item-section>
-                            <q-item-label>Send a friend request</q-item-label>
+                            <q-item-label>Search for user</q-item-label>
                         </q-item-section>
 
                         <q-item-section avatar>
-                            <q-icon name="person_add_alt_1" />
+                            <q-icon name="person_search" />
                         </q-item-section>
                     </q-item>
                     <FriendLink
@@ -75,7 +81,10 @@ import { useRouter } from "vue-router";
 import { storeToRefs } from "pinia";
 import ROUTE_NAMES from "src/router/routeNames";
 import FriendLink from "src/components/FriendLink.vue";
+import CreateGroupDialog from "src/components/CreateGroupDialog.vue";
+import { useQuasar } from "quasar";
 
+const $q = useQuasar();
 const userStore = useUserStore();
 const router = useRouter();
 
@@ -85,6 +94,12 @@ const { relationships } = storeToRefs(userStore);
 
 function toggleLeftDrawer() {
     leftDrawerOpen.value = !leftDrawerOpen.value;
+}
+
+function showCreateGroupDialog() {
+    $q.dialog({
+        component: CreateGroupDialog
+    });
 }
 
 function logout() {
