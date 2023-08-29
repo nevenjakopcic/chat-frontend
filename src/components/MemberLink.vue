@@ -66,8 +66,9 @@ const isCurrentUserAdmin = computed(
     () => props.group?.members.find((m) => m.id === userStore.data?.id)?.role === "ROLE_ADMIN"
 );
 
-function promoteToAdmin() {
-    console.log("promote to admin");
+async function promoteToAdmin() {
+    await GroupService.promoteToAdmin(props.group?.id, props.member.id);
+    emit("change");
 }
 
 async function kickFromGroup() {
