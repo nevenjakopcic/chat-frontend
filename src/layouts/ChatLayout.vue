@@ -74,9 +74,7 @@
 <script setup lang="ts">
 import { useUserStore } from "src/stores/user-store";
 import GroupLink from "components/GroupLink.vue";
-import GroupService from "../services/groupService";
-import { onMounted, ref } from "vue";
-import { Group } from "src/models/chat";
+import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { storeToRefs } from "pinia";
 import ROUTE_NAMES from "src/router/routeNames";
@@ -89,8 +87,7 @@ const userStore = useUserStore();
 const router = useRouter();
 
 const leftDrawerOpen = ref(false);
-const groups = ref<Group[]>([]);
-const { relationships } = storeToRefs(userStore);
+const { groups, relationships } = storeToRefs(userStore);
 
 function toggleLeftDrawer() {
     leftDrawerOpen.value = !leftDrawerOpen.value;
@@ -106,8 +103,4 @@ function logout() {
     userStore.logout();
     router.push({ name: ROUTE_NAMES.LOGIN });
 }
-
-onMounted(async () => {
-    groups.value = await GroupService.getAllGroups();
-});
 </script>

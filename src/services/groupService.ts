@@ -13,6 +13,10 @@ export default {
         return (await api.get(`/group/${groupId}/last/${last}`)).data;
     },
 
+    async leaveGroup(groupId: number | undefined) {
+        return (await api.delete(`/group/${groupId}/leave`)).data;
+    },
+
     async promoteToAdmin(groupId: number | undefined, memberId: number) {
         return (await api.put(`/group/${groupId}/promote/${memberId}`));
     },

@@ -1,13 +1,15 @@
 import { defineStore } from "pinia";
 import { computed, ref } from "vue";
 import { AppUser } from "src/models/auth";
-import { Relationship } from "src/models/chat";
+import { Group, Relationship } from "src/models/chat";
+import GroupService from "src/services/groupService";
 import RelationshipService from "src/services/relationshipService";
 
 export const useUserStore = defineStore(
     "user",
     () => {
         const data = ref<AppUser | null>(null);
+        const groups = ref<Group[]>([]);
         const relationships = ref<Relationship[]>([]);
 
         const isAuthenticated = computed(() => data.value !== null);
@@ -20,6 +22,14 @@ export const useUserStore = defineStore(
             data.value = null;
         }
 
+        function setGroups(payload: Group[]): void {
+            groups.value = payload;
+        }
+
+        async function updateGroups(): Promise<void> {
+            setGroups(await GroupService.getAllGroups());
+        }
+
         function setRelationships(payload: Relationship[]): void {
             relationships.value = payload;
         }
@@ -28,16 +38,15 @@ export const useUserStore = defineStore(
             setRelationships(await RelationshipService.getAllRelationships());
         }
 
-        const getRelationships = computed(() => relationships);
-
         return {
             data,
+            groups,
             relationships,
             isAuthenticated,
             login,
             logout,
-            updateRelationships,
-            getRelationships
+            updateGroups,
+            updateRelationships
         };
     },
     {

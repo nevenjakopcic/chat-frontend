@@ -101,12 +101,13 @@ import GroupService from "../services/groupService";
 import { Group, Message } from "src/models/chat";
 import { useUserStore } from "src/stores/user-store";
 import { ref, onMounted, watch, onUnmounted, nextTick } from "vue";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { useQuasar } from "quasar";
 import { QScrollArea } from "quasar";
 
 const $q = useQuasar();
 const userStore = useUserStore();
+const router = useRouter();
 const route = useRoute();
 const stomp = new Client({ brokerURL: "ws://localhost:8080/chat" });
 const subscriptions: StompSubscription[] = [];
@@ -141,8 +142,10 @@ function addFriendToGroup() {
     console.log("add friend to group");
 }
 
-function leaveGroup() {
-    console.log("leave group");
+async function leaveGroup() {
+    router.push({ name: "home"});
+    await GroupService.leaveGroup(group.value?.id);
+    userStore.updateGroups();
 }
 
 function showUserDialog(userId: number) {

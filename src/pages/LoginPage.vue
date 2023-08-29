@@ -63,6 +63,7 @@ async function login() {
         const data = await AuthService.login(username.value, password.value);
         userStore.login(data);
 
+        userStore.updateGroups();
         userStore.updateRelationships();
 
         router.push({ name: ROUTE_NAMES.HOME });
