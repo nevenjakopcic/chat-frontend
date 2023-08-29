@@ -34,7 +34,6 @@
                         clickable
                         @click="addFriendToGroup"
                         class="text-grey-8"
-                        style="border-bottom: solid 1px rgba(0, 0, 0, 0.2);"
                     >
                         <q-item-section>
                             <q-item-label>Add friend to group</q-item-label>
@@ -45,11 +44,12 @@
                         </q-item-section>
                     </q-item>
 
+                <q-separator />
+
                     <q-item
                         clickable
                         @click="leaveGroup"
                         class="text-grey-8"
-                        style="border-bottom: solid 1px rgba(0, 0, 0, 0.2);"
                     >
                         <q-item-section>
                             <q-item-label>Leave group</q-item-label>
@@ -59,6 +59,8 @@
                             <q-icon name="exit_to_app" />
                         </q-item-section>
                     </q-item>
+
+                    <q-separator />
 
                     <q-item-label header> Members </q-item-label>
                     <MemberLink
