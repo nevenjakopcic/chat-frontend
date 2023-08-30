@@ -7,22 +7,29 @@
                        height: calc(100vh - 154px)"
                 ref="scrollArea"
             >
-                <q-chat-message
-                    v-for="(message, key) in messages"
-                    :key="key"
-                    :text="[message.content]"
-                    :sent="isSent(message)"
-                    :stamp="message.createdAt.toString()"
+                <q-infinite-scroll
+                    @load="onLoad"
+                    reverse
+                    debounce=100
+                    ref="infiniteScroll"
                 >
-                    <template #name>
-                        <span
-                            @click="showUserDialog(message.authorId)"
-                            class="cursor-pointer"
-                        >
-                            {{ getUsername(message) }}
-                        </span>
-                    </template>
-                </q-chat-message>
+                    <q-chat-message
+                        v-for="message in messages"
+                        :key="message.id"
+                        :text="[message.content]"
+                        :sent="isSent(message)"
+                        :stamp="message.createdAt.toString()"
+                    >
+                        <template #name>
+                            <span
+                                @click="showUserDialog(message.authorId)"
+                                class="cursor-pointer text-bold"
+                            >
+                                {{ getUsername(message) }}
+                            </span>
+                        </template>
+                    </q-chat-message>
+                </q-infinite-scroll>
             </q-scroll-area>
 
             <q-scroll-area
@@ -32,7 +39,7 @@
                 <q-list>
                     <q-item
                         clickable
-                        @click="addFriendToGroup"
+                        @click="showAddFriendToGroupDialog"
                         class="text-grey-8"
                     >
                         <q-item-section>
@@ -105,7 +112,9 @@ import { useUserStore } from "src/stores/user-store";
 import { ref, onMounted, watch, onUnmounted, nextTick } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useQuasar } from "quasar";
-import { QScrollArea } from "quasar";
+import { QScrollArea, QInfiniteScroll } from "quasar";
+import ROUTE_NAMES from "src/router/routeNames";
+import AddFriendToGroupDialog from "src/components/AddFriendToGroupDialog.vue";
 
 const $q = useQuasar();
 const userStore = useUserStore();
@@ -117,6 +126,7 @@ const subscriptions: StompSubscription[] = [];
 const group = ref<Group>();
 const messages = ref<Message[]>([]);
 const scrollArea = ref<QScrollArea | null>(null);
+const infiniteScroll = ref<QInfiniteScroll | null>(null);
 const input = ref<HTMLInputElement | null>(null);
 const inputText = ref<string>("");
 
@@ -124,11 +134,30 @@ function getUsername(message: Message) {
     const authorId = message.authorId;
     const author = group.value?.members.find((m) => m.id === authorId);
 
-    return author?.username;
+    return author ? author?.username : "Deleted user";
 }
 
 function isSent(message: Message) {
     return message.authorId === userStore.data?.id;
+}
+
+async function onLoad(index: unknown, done: () => void) {
+    if (!messages.value.length) {
+        done();
+        return;
+    }
+
+    const oldestMessageId = messages.value?.at(0).id;
+
+    const olderMessages: Message[] = await GroupService.getGroupMessagesAfterSpecific(+route.params.id, 20, oldestMessageId);
+    if (!olderMessages.length) {
+        stop();
+        return;
+    }
+    olderMessages.sort((a, b) => a.id - b.id);
+    messages.value = olderMessages.concat(messages.value);
+
+    done();
 }
 
 function onSubmit() {
@@ -140,12 +169,17 @@ function onSubmit() {
     input.value?.focus();
 }
 
-function addFriendToGroup() {
-    console.log("add friend to group");
+function showAddFriendToGroupDialog() {
+    $q.dialog({
+        component: AddFriendToGroupDialog,
+        componentProps: {
+            members: group.value?.members
+        }
+    })
 }
 
 async function leaveGroup() {
-    router.push({ name: "home"});
+    router.push({ name: ROUTE_NAMES.HOME});
     await GroupService.leaveGroup(group.value?.id);
     userStore.updateGroups();
 }
@@ -204,7 +238,7 @@ watch(
             subscriptions.pop()?.unsubscribe();
         }
 
-        setupConversation(+toParams.id);
+        await setupConversation(+toParams.id);
     }
 );
 

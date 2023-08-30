@@ -9,8 +9,22 @@ export default {
         return (await api.get(`/group/${groupId}`)).data;
     },
 
-    async getGroupMessages(groupId: number, last: number) {
-        return (await api.get(`/group/${groupId}/last/${last}`)).data;
+    async getGroupMessages(groupId: number, n: number) {
+        return (await api.get(`/group/${groupId}/last/${n}`)).data;
+    },
+
+    async getGroupMessagesAfterSpecific(groupId: number, n: number, lastMessage: number) {
+        return (await api.get(`/group/${groupId}/last/${n}/after/${lastMessage}`)).data;
+    },
+
+    async createGroup(groupName: string) {
+        return (await api.post("/group/create", {
+            name: groupName
+        })).data;
+    },
+
+    async addMember(groupId: number, userId: number) {
+        return (await api.post(`/group/${groupId}/add-member/${userId}`));
     },
 
     async leaveGroup(groupId: number | undefined) {
