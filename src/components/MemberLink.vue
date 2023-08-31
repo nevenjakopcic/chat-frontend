@@ -63,7 +63,9 @@ const shouldShowDropdown = computed(() => {
 });
 
 const isCurrentUserAdmin = computed(
-    () => props.group?.members.find((m) => m.id === userStore.data?.id)?.role === "ROLE_ADMIN"
+    () =>
+        props.group?.members.find((m) => m.id === userStore.data?.id)?.role ===
+        "ROLE_ADMIN"
 );
 
 async function promoteToAdmin() {

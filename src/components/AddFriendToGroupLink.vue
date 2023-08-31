@@ -25,7 +25,10 @@ const lastSeen = computed(() =>
 );
 
 async function addToGroup() {
-    await GroupService.addMember(props.groupId, props.relationship.otherUser.id);
+    await GroupService.addMember(
+        props.groupId,
+        props.relationship.otherUser.id
+    );
     emit("change");
 }
 

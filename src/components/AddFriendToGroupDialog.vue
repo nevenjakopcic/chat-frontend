@@ -6,15 +6,15 @@
                 <q-input v-model="username" label="Find friend by username" />
             </q-form>
 
-                <q-list>
-                    <AddFriendToGroupLink
-                        v-for="relationship in potentialMembers"
-                        :key="relationship.otherUser.id"
-                        :group-id="groupId"
-                        :relationship="relationship"
-                        @change="onChange()"
-                    />
-                </q-list>
+            <q-list>
+                <AddFriendToGroupLink
+                    v-for="relationship in potentialMembers"
+                    :key="relationship.otherUser.id"
+                    :group-id="groupId"
+                    :relationship="relationship"
+                    @change="onChange()"
+                />
+            </q-list>
         </q-card>
     </q-dialog>
 </template>
@@ -31,12 +31,17 @@ const userStore = useUserStore();
 const username = ref("");
 const { relationships } = storeToRefs(userStore);
 
-const friendships = computed(() => relationships.value.filter((r) => r.status === "FRIEND"));
+const friendships = computed(() =>
+    relationships.value.filter((r) => r.status === "FRIEND")
+);
 const potentialMembers = computed(() => {
     const memberIds = props.members.map((m) => m.id);
     if (username.value && username.value !== "") {
-        return friendships.value.filter((f) => !memberIds.includes(f.otherUser.id)
-               && f.otherUser.username.includes(username.value));
+        return friendships.value.filter(
+            (f) =>
+                !memberIds.includes(f.otherUser.id) &&
+                f.otherUser.username.includes(username.value)
+        );
     }
 
     return friendships.value.filter((f) => !memberIds.includes(f.otherUser.id));

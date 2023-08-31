@@ -3,14 +3,13 @@
         <div class="row fit" style="flex-grow: 1">
             <q-scroll-area
                 class="q-px-md"
-                style="width: calc(100% - 280px);
-                       height: calc(100vh - 154px)"
+                style="width: calc(100% - 280px); height: calc(100vh - 154px)"
                 ref="scrollArea"
             >
                 <q-infinite-scroll
                     @load="onLoad"
                     reverse
-                    debounce=100
+                    debounce="100"
                     ref="infiniteScroll"
                 >
                     <q-chat-message
@@ -32,10 +31,7 @@
                 </q-infinite-scroll>
             </q-scroll-area>
 
-            <q-scroll-area
-                style="width: 280px;
-                       height: calc(100vh - 154px)"
-            >
+            <q-scroll-area style="width: 280px; height: calc(100vh - 154px)">
                 <q-list>
                     <q-item
                         clickable
@@ -51,13 +47,9 @@
                         </q-item-section>
                     </q-item>
 
-                <q-separator />
+                    <q-separator />
 
-                    <q-item
-                        clickable
-                        @click="leaveGroup"
-                        class="text-grey-8"
-                    >
+                    <q-item clickable @click="leaveGroup" class="text-grey-8">
                         <q-item-section>
                             <q-item-label>Leave group</q-item-label>
                         </q-item-section>
@@ -149,7 +141,12 @@ async function onLoad(index: unknown, done: () => void) {
 
     const oldestMessageId = messages.value?.at(0).id;
 
-    const olderMessages: Message[] = await GroupService.getGroupMessagesAfterSpecific(+route.params.id, 20, oldestMessageId);
+    const olderMessages: Message[] =
+        await GroupService.getGroupMessagesAfterSpecific(
+            +route.params.id,
+            20,
+            oldestMessageId
+        );
     if (!olderMessages.length) {
         stop();
         return;
@@ -172,7 +169,7 @@ function onSubmit() {
 function showAddFriendToGroupDialog() {
     const onAdd = () => {
         updateGroup();
-    }
+    };
 
     $q.dialog({
         component: AddFriendToGroupDialog,
@@ -181,11 +178,11 @@ function showAddFriendToGroupDialog() {
             members: group.value?.members,
             callback: onAdd
         }
-    })
+    });
 }
 
 async function leaveGroup() {
-    router.push({ name: ROUTE_NAMES.HOME});
+    router.push({ name: ROUTE_NAMES.HOME });
     await GroupService.leaveGroup(group.value?.id);
     userStore.updateGroups();
 }

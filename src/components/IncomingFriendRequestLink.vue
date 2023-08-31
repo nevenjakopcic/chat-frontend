@@ -6,13 +6,31 @@
 
         <q-item-section>
             <q-item-label>{{ relationship.otherUser.username }}</q-item-label>
-            <q-item-label caption>{{ "Received: " + receivedWhen }}</q-item-label>
+            <q-item-label caption>{{
+                "Received: " + receivedWhen
+            }}</q-item-label>
         </q-item-section>
 
         <q-item-section top side>
             <q-btn-group flat dense rounded>
-                <q-btn @click="acceptFriendRequest" flat dense round size="12px" color="positive" icon="check" />
-                <q-btn @click="rejectFriendRequest" flat dense round size="12px" color="negative" icon="close" />
+                <q-btn
+                    @click="acceptFriendRequest"
+                    flat
+                    dense
+                    round
+                    size="12px"
+                    color="positive"
+                    icon="check"
+                />
+                <q-btn
+                    @click="rejectFriendRequest"
+                    flat
+                    dense
+                    round
+                    size="12px"
+                    color="negative"
+                    icon="close"
+                />
             </q-btn-group>
         </q-item-section>
     </q-item>
@@ -23,23 +41,25 @@ import { PropType, computed } from "vue";
 import { useUserStore } from "src/stores/user-store";
 import TimeAgo from "javascript-time-ago";
 import { Relationship } from "src/models/chat";
-import RelationshipService from "src/services/relationshipService"
+import RelationshipService from "src/services/relationshipService";
 
 const userStore = useUserStore();
 const timeAgo = new TimeAgo("en-US");
 const receivedWhen = computed(() =>
-    timeAgo.format(
-        Date.parse(props.relationship.lastUpdatedAt.toString())
-    )
+    timeAgo.format(Date.parse(props.relationship.lastUpdatedAt.toString()))
 );
 
 async function acceptFriendRequest() {
-    await RelationshipService.acceptFriendRequest(props.relationship.otherUser.id);
+    await RelationshipService.acceptFriendRequest(
+        props.relationship.otherUser.id
+    );
     updateRelationship();
 }
 
 async function rejectFriendRequest() {
-    await RelationshipService.rejectFriendRequest(props.relationship.otherUser.id);
+    await RelationshipService.rejectFriendRequest(
+        props.relationship.otherUser.id
+    );
     updateRelationship();
 }
 

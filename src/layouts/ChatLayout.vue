@@ -108,8 +108,8 @@ import { useRouter } from "vue-router";
 import { storeToRefs } from "pinia";
 import ROUTE_NAMES from "src/router/routeNames";
 import FriendLink from "src/components/FriendLink.vue";
-import IncomingFriendRequestLink from "src/components/IncomingFriendRequestLink.vue"
-import OutgoingFriendRequestLink from "src/components/OutgoingFriendRequestLink.vue"
+import IncomingFriendRequestLink from "src/components/IncomingFriendRequestLink.vue";
+import OutgoingFriendRequestLink from "src/components/OutgoingFriendRequestLink.vue";
 import CreateGroupDialog from "src/components/CreateGroupDialog.vue";
 import { useQuasar } from "quasar";
 
@@ -120,9 +120,15 @@ const router = useRouter();
 const leftDrawerOpen = ref(false);
 const { groups, relationships } = storeToRefs(userStore);
 
-const friendships = computed(() => relationships.value.filter((r) => r.status === "FRIEND"));
-const incoming_friend_requests = computed(() => relationships.value.filter((r) => r.status === "PENDING_FRIEND_REQUEST"));
-const outgoing_friend_requests = computed(() => relationships.value.filter((r) => r.status === "SENT_FRIEND_REQUEST"));
+const friendships = computed(() =>
+    relationships.value.filter((r) => r.status === "FRIEND")
+);
+const incoming_friend_requests = computed(() =>
+    relationships.value.filter((r) => r.status === "PENDING_FRIEND_REQUEST")
+);
+const outgoing_friend_requests = computed(() =>
+    relationships.value.filter((r) => r.status === "SENT_FRIEND_REQUEST")
+);
 
 function toggleLeftDrawer() {
     leftDrawerOpen.value = !leftDrawerOpen.value;
