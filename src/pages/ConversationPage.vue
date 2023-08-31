@@ -134,7 +134,7 @@ function getUsername(message: Message) {
     const authorId = message.authorId;
     const author = group.value?.members.find((m) => m.id === authorId);
 
-    return author ? author?.username : "Deleted user";
+    return author ? author.username : "Deleted user";
 }
 
 function isSent(message: Message) {
@@ -170,10 +170,16 @@ function onSubmit() {
 }
 
 function showAddFriendToGroupDialog() {
+    const onAdd = () => {
+        updateGroup();
+    }
+
     $q.dialog({
         component: AddFriendToGroupDialog,
         componentProps: {
-            members: group.value?.members
+            groupId: group.value?.id,
+            members: group.value?.members,
+            callback: onAdd
         }
     })
 }

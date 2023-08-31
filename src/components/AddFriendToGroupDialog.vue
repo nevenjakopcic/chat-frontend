@@ -7,10 +7,12 @@
             </q-form>
 
                 <q-list>
-                    <FriendLink
+                    <AddFriendToGroupLink
                         v-for="relationship in potentialMembers"
                         :key="relationship.otherUser.id"
+                        :group-id="groupId"
                         :relationship="relationship"
+                        @change="onChange()"
                     />
                 </q-list>
         </q-card>
@@ -22,30 +24,43 @@ import { storeToRefs } from "pinia";
 import { useDialogPluginComponent } from "quasar";
 import { Member } from "src/models/chat";
 import { useUserStore } from "src/stores/user-store";
-import { PropType, computed, onMounted, ref } from "vue";
-import FriendLink from "src/components/FriendLink.vue";
+import { PropType, computed, ref } from "vue";
+import AddFriendToGroupLink from "src/components/AddFriendToGroupLink.vue";
 
 const userStore = useUserStore();
 const username = ref("");
 const { relationships } = storeToRefs(userStore);
 
 const friendships = computed(() => relationships.value.filter((r) => r.status === "FRIEND"));
-const potentialMembers = computed(() =>
-    relationships.value.filter((r) => {
-        !props.members.some((m) => m.id === r.otherUser.id);
-    })
-);
+const potentialMembers = computed(() => {
+    const memberIds = props.members.map((m) => m.id);
+    if (username.value && username.value !== "") {
+        return friendships.value.filter((f) => !memberIds.includes(f.otherUser.id)
+               && f.otherUser.username.includes(username.value));
+    }
+
+    return friendships.value.filter((f) => !memberIds.includes(f.otherUser.id));
+});
+
+function onChange() {
+    props.callback();
+    onDialogHide();
+}
 
 const props = defineProps({
+    groupId: {
+        type: Number,
+        required: true
+    },
     members: {
         type: Object as PropType<Member[]>,
         required: true
+    },
+    callback: {
+        type: Function,
+        required: true
     }
 });
-
-onMounted(() => {
-    console.log(friendships);
-})
 
 defineEmits([...useDialogPluginComponent.emits]);
 
