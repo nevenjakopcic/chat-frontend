@@ -38,7 +38,11 @@
 
                     <q-separator />
 
-                    <q-item clickable class="text-grey-8">
+                    <q-item
+                        clickable
+                        @click="showSearchForUserDialog"
+                        class="text-grey-8"
+                    >
                         <q-item-section>
                             <q-item-label>Search for user</q-item-label>
                         </q-item-section>
@@ -111,6 +115,7 @@ import FriendLink from "src/components/FriendLink.vue";
 import IncomingFriendRequestLink from "src/components/IncomingFriendRequestLink.vue";
 import OutgoingFriendRequestLink from "src/components/OutgoingFriendRequestLink.vue";
 import CreateGroupDialog from "src/components/CreateGroupDialog.vue";
+import SearchForUserDialog from "src/components/SearchForUserDialog.vue";
 import { useQuasar } from "quasar";
 
 const $q = useQuasar();
@@ -138,6 +143,12 @@ function showCreateGroupDialog() {
     $q.dialog({
         component: CreateGroupDialog
     });
+}
+
+function showSearchForUserDialog() {
+    $q.dialog({
+        component: SearchForUserDialog
+    })
 }
 
 function logout() {

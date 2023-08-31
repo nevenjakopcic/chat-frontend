@@ -28,7 +28,7 @@ export interface User {
     username: string;
     email: string;
     lastOnline: Date;
-    joinedAt: Date;
+    userSince: Date;
 }
 
 export interface Relationship {

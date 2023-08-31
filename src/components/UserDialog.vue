@@ -62,7 +62,7 @@
 import { useDialogPluginComponent } from "quasar";
 import { PropType, computed, onMounted, ref } from "vue";
 import { useUserStore } from "src/stores/user-store";
-import { Member, Relationship } from "src/models/chat";
+import { User, Relationship } from "src/models/chat";
 import RelationshipService from "src/services/relationshipService";
 import TimeAgo from "javascript-time-ago";
 
@@ -75,7 +75,7 @@ const relationship = ref<Relationship | null>(null);
 
 const props = defineProps({
     user: {
-        type: Object as PropType<Member>,
+        type: Object as PropType<User>,
         required: true
     }
 });
