@@ -8,5 +8,15 @@ export default {
                 password: password
             })
         ).data;
+    },
+
+    async register(username: string, password: string, email: string) {
+        return (
+            await api.post("/public/register", {
+                username: username,
+                password: password,
+                email: email
+            })
+        ).data;
     }
 };
