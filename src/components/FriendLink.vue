@@ -30,5 +30,5 @@ const props = defineProps({
     }
 });
 
-const link = "/home";
+const link = "/private/" + props.relationship.otherUser.id;
 </script>

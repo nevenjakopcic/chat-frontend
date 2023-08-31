@@ -48,6 +48,14 @@ const routes: RouteRecordRaw[] = [
                 }
             },
             {
+                path: "/private/:id",
+                name: ROUTE_NAMES.PRIVATE_CONVERSATION,
+                component: () => import("pages/PrivateConversationPage.vue"),
+                meta: {
+                    auth: true
+                }
+            },
+            {
                 path: "/test",
                 name: ROUTE_NAMES.TEST,
                 component: () => import("pages/TestPage.vue"),
